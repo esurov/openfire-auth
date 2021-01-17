@@ -24,22 +24,7 @@ public class AppAuthProvider implements AuthProvider {
     private static final Logger log = LoggerFactory.getLogger(AppAuthProvider.class);
 
     public AppAuthProvider(){
-        log.debug("Creating GameAuthProvider");
-    }
-
-    @Override
-    public boolean isPlainSupported() {
-        return true;
-    }
-    
-    @Override
-	public boolean isScramSupported() {
-		return false;
-	}
-
-    @Override
-    public boolean isDigestSupported() {
-        return false;
+        log.debug("Creating AppAuthProvider");
     }
 
     @Override
@@ -65,12 +50,6 @@ public class AppAuthProvider implements AuthProvider {
     }
 
     @Override
-    public void authenticate(String s, String token, String digest) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
-        log.debug("authenticating user {} with token {} and digest {}", new Object[]{s, token, digest});
-        throw new UnsupportedOperationException("auth with digest not supported!");
-    }
-
-    @Override
     public String getPassword(String s) throws UserNotFoundException, UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
@@ -80,22 +59,60 @@ public class AppAuthProvider implements AuthProvider {
         throw new UnsupportedOperationException();
     }
 
+	@Override
+    public String getSalt(String username) throws UnsupportedOperationException, UserNotFoundException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getIterations(String username) throws UnsupportedOperationException, UserNotFoundException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getServerKey(String username) throws UnsupportedOperationException, UserNotFoundException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getStoredKey(String username) throws UnsupportedOperationException, UserNotFoundException {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public boolean supportsPasswordRetrieval() {
         return false;
     }
-    
+
+    @Override
+    public boolean isScramSupported() {
+        return false;
+    }
+
+    public boolean isPlainSupported() {
+        return true;
+    }
+
+    public boolean isDigestSupported() {
+        return false;
+    }
+
+    public void authenticate(String username, String token, String digest) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
+        log.debug("authenticating user {} with token {} and digest {}", new Object[]{username, token, digest});
+        throw new UnsupportedOperationException("auth with digest not supported!");
+    }
+
     private PublicKey getPublicKey(String uri) {
-    	log.debug("Retrieving key from path: " +  uri);
-    	
-		try {
-			byte[] keyBytes = Files.readAllBytes(Paths.get(uri));
-			X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-			return kf.generatePublic(spec);
-		} catch (Exception e) {
-			log.error("Private key retrieval failed: ", e.getMessage());
-			throw new InternalError();
-		}
-	}
+        log.debug("Retrieving key from path: " +  uri);
+
+        try {
+            byte[] keyBytes = Files.readAllBytes(Paths.get(uri));
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            return kf.generatePublic(spec);
+        } catch (Exception e) {
+            log.error("Private key retrieval failed: ", e.getMessage());
+            throw new InternalError();
+        }
+    }
 }
